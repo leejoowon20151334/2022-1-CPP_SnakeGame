@@ -2,6 +2,7 @@
 2022-1 C++ SnakeGame
 
 사용 라이브러리 : https://sourceforge.net/projects/pdcurses/
+
 추가방법 : 
   1. Debug x86으로 진행한다.
   2. 아래 링크의 방법을 진행한다.
