@@ -20,10 +20,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="panel.h">
+    <ClInclude Include="pdc34dllw\curses.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="curses.h">
+    <ClInclude Include="pdc34dllw\panel.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
