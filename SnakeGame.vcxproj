@@ -145,13 +145,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Practice01\SnakeGame.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="SnakeGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\pdc34dllw\curses.h" />
-    <ClInclude Include="..\pdc34dllw\panel.h" />
+    <ClInclude Include="curses.h" />
+    <ClInclude Include="panel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
