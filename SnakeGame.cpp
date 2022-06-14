@@ -90,6 +90,44 @@ void initSnakeBoard() {
     }
 }
 
+//stage별 벽 추가
+//  1 : 추가없음
+//  2 : 중앙 세로벽 1개
+//  3 : 중앙 십자벽 1개
+//  4 : 중앙 십자벽 1개 + 상하단 벽 각 2개 (총 5개)
+//  5 : 중앙 십자벽 1개 + 맵 축소
+void addStageWall(int stage) {
+    if (stage < 2) return;
+    for (int i = 0; i < 5; i++) {
+        snakeBoard[snakeBoardY / 2 - i][snakeBoardX / 2] = -1;
+        snakeBoard[snakeBoardY / 2 + i][snakeBoardX / 2] = -1;
+        if (stage > 2) {
+            snakeBoard[snakeBoardY / 2][snakeBoardX / 2 - i] = -1;
+            snakeBoard[snakeBoardY / 2][snakeBoardX / 2 + i] = -1;
+        }
+        if (stage > 3) {
+            snakeBoard[1+i][9] = -1;
+            snakeBoard[1+i][snakeBoardX-10] = -1;
+            snakeBoard[snakeBoardY-2-i][9] = -1;
+            snakeBoard[snakeBoardY-2-i][snakeBoardX - 10] = -1;
+        }
+    }
+    if (stage > 4) {
+        for (int i = 0; i < snakeBoardY; i++) {
+            for (int j = 0; j < 10; j++) {
+                snakeBoard[i][j] = -1;
+                snakeBoard[i][snakeBoardX-1-j] = -1;
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < snakeBoardX; j++) {
+                snakeBoard[i][j] = -1;
+                snakeBoard[snakeBoardY-1-i][j] = -1;
+            }
+        }
+    }
+}
+
 //snake 이동
 // status = 0 or etc : 기본 이동
 // status = 1 : 길이 증가 및 이동
@@ -133,8 +171,8 @@ void initSnake() {
     snakeLength = 1;
 
     snake[0] = new int[2];
-    snake[0][0] = snakeBoardY / 2 - 1;
-    snake[0][1] = snakeBoardX / 2 - 2;
+    snake[0][0] = snakeBoardY / 2;
+    snake[0][1] = 10;
 
     moveSnake(2, 1);
     moveSnake(2, 1);
@@ -216,39 +254,61 @@ int main()
     snakeWin = newwin(21, 47, 3, 2);
     wbkgd(snakeWin, COLOR_PAIR(1));
     wattron(snakeWin, COLOR_PAIR(1));
-    mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Press space to start...");
-    wrefresh(snakeWin);
-    getchar();
-    mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "                         ");
+    
+    bool isFail = false;
 
-    int i = 0;
-    int tic = 0;
-    int key = 2;
-    initSnakeBoard();
-    initSnake();
+    for (int stage = 1; stage < 6; stage++) {
+        if (stage == 3) ticUnit = 250;  //3단계부터 속도 2배 증가
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Press space to start...");
+        wrefresh(snakeWin);
+        getchar();
 
-    addItem(3, 10, 1);
-    addItem(5, 10, 1);
-    addItem(7, 10, 1);
-    addItem(9, 10, -1);
+        int i = 0;
+        int tic = 0;
+        int key = 2;
+        initSnakeBoard();
+        addStageWall(stage);
+        initSnake();
 
-    while (1) {
-        Sleep(timeUnit);
-        key = keyState(key);
-        if (key < 0) break; //반대방향 입력 or esc 입력시 종료
-        if (isConflict(key)) break;  //벽 or 꼬리 충돌시 종료
+        addItem(4, 10, 1);
+        addItem(5, 10, 1);
+        addItem(7, 10, 1);
+        addItem(7, 13, 1);
+        addItem(7, 15, 1);
+        addItem(11, 10, -1);
 
-        if (tic >= ticUnit) {
-            moveSnake(key, checkItem(key));
-            printSnakeBoard(snakeWin);
-            tic = 0;
+        while (1) {
+            Sleep(timeUnit);
+            key = keyState(key);
+            if (key < 0) {
+                isFail = true;
+                break; //반대방향 입력 or esc 입력시 종료
+            }
+
+            if (tic >= ticUnit) {
+                if (isConflict(key)) {
+                    isFail = true;
+                    break;  //벽 or 꼬리 충돌시 종료
+                }
+                moveSnake(key, checkItem(key));
+                printSnakeBoard(snakeWin);
+                tic = 0;
+            }
+
+            i++;
+            tic += timeUnit;
+            if (snakeLength > 7) break;
         }
-
-        i++;
-        tic += timeUnit;
+        if (isFail) break;
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Success!!");
+        wrefresh(snakeWin);
+        getchar();
     }
-
-    mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Fail...");
+    
+    if(isFail)
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Fail...");
+    else
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "All Clear!!");
     wrefresh(snakeWin);
     getchar();
 
