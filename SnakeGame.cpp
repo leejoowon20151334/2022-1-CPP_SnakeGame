@@ -461,11 +461,21 @@ void printSnakeBoard(WINDOW* win) {
     wrefresh(win);
 }
 
+void printScore(int stage, int score) {
+    string stringStage, stringScore;
+    stringStage = to_string(stage);
+    stringScore = to_string(score);
+    mvprintw(7, 65, stringStage.c_str());
+    mvprintw(15, 65, stringScore.c_str());
+    refresh();
+}
+
+
 int main()
 {
     WINDOW* snakeWin;
     initscr();
-    resize_term(25, 52);
+    resize_term(25, 82);
     keypad(stdscr, TRUE);
     curs_set(0);
     noecho();
@@ -479,6 +489,9 @@ int main()
     init_pair(7, COLOR_WHITE, COLOR_CYAN);
     border('*', '*', '*', '*', '*', '*', '*', '*');
     mvprintw(1, 1, "Snake Game");
+    mvprintw(7, 55, "Stage : ");
+    mvprintw(11, 55, "Require : 5");
+    mvprintw(15, 55, "Score : ");
     refresh();
 
 
@@ -528,6 +541,7 @@ int main()
                 }
                 moveSnake(key, checkItem(key), enterGate(key, gate1X, gate1Y, gate2X, gate2Y)); //Gate Ãß°¡
                 printSnakeBoard(snakeWin);
+                printScore(stage, snakeLength - 3);
                 tic = 0;
             }
             i++;
