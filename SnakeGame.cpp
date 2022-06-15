@@ -399,31 +399,74 @@ bool isConflict(int key) {
 }
 
 //window에 board 출력
+//void printSnakeBoard(WINDOW* win) {
+//    string line;
+//    for (int i = 0; i < snakeBoardY; i++) {
+//        line = "";
+//        for (int j = 0; j < snakeBoardX; j++) {
+//            if (snakeBoard[i][j] == -2 || snakeBoard[i][j] == -1)
+//                line += "-";
+//            else if (snakeBoard[i][j] == 0)
+//                line += " ";
+//            else if (snakeBoard[i][j] == 1)
+//                line += "O";
+//            else if (snakeBoard[i][j] == 2)
+//                line += "H";
+//            else if (snakeBoard[i][j] == 3)
+//                line += "G";
+//            else if (snakeBoard[i][j] == 4)
+//                line += "P";
+//            else if (snakeBoard[i][j] == 5)
+//                line += "@";
+//            else if (snakeBoard[i][j] == 6)
+//                line += "@";
+//        }
+//        mvwprintw(win, i + 1, 2, line.c_str());
+//    }
+//
+//    wrefresh(win);
+//}
+//window에 board 출력
 void printSnakeBoard(WINDOW* win) {
-    string line;
     for (int i = 0; i < snakeBoardY; i++) {
-        line = "";
         for (int j = 0; j < snakeBoardX; j++) {
-            if (snakeBoard[i][j] == -2 || snakeBoard[i][j] == -1)
-                line += "-";
-            else if (snakeBoard[i][j] == 0)
-                line += " ";
-            else if (snakeBoard[i][j] == 1)
-                line += "O";
-            else if (snakeBoard[i][j] == 2)
-                line += "H";
-            else if (snakeBoard[i][j] == 3)
-                line += "G";
-            else if (snakeBoard[i][j] == 4)
-                line += "P";
-            else if (snakeBoard[i][j] == 5)
-                line += "@";
-            else if (snakeBoard[i][j] == 6)
-                line += "@";
+            if (snakeBoard[i][j] == -2 || snakeBoard[i][j] == -1) {
+                wattron(win,COLOR_PAIR(2));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(2));
+            }
+            else if (snakeBoard[i][j] == 0) {
+                wattron(win,COLOR_PAIR(1));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(1));
+            }
+            else if (snakeBoard[i][j] == 1) {
+                wattron(win,COLOR_PAIR(7));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(7));
+            }
+            else if (snakeBoard[i][j] == 2) {
+                wattron(win,COLOR_PAIR(4));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (snakeBoard[i][j] == 3) {
+                wattron(win,COLOR_PAIR(3));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(3));
+            }
+            else if (snakeBoard[i][j] == 4) {
+                wattron(win,COLOR_PAIR(5));
+                mvwprintw(win, i + 1, j+2, " ");
+                wattroff(win,COLOR_PAIR(5));
+            }
+            else if (snakeBoard[i][j] == 5 || snakeBoard[i][j] == 6) {
+                attron(COLOR_PAIR(6));
+                mvwprintw(win, i + 1, j+2, "@");
+                attroff(COLOR_PAIR(6));
+            }
         }
-        mvwprintw(win, i + 1, 2, line.c_str());
     }
-
     wrefresh(win);
 }
 
@@ -437,6 +480,12 @@ int main()
     noecho();
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(2, COLOR_WHITE, COLOR_YELLOW);
+    init_pair(3, COLOR_WHITE, COLOR_GREEN);
+    init_pair(4, COLOR_WHITE, COLOR_BLUE);
+    init_pair(5, COLOR_WHITE, COLOR_RED);
+    init_pair(6, COLOR_WHITE, COLOR_MAGENTA);
+    init_pair(7, COLOR_WHITE, COLOR_CYAN);
     border('*', '*', '*', '*', '*', '*', '*', '*');
     mvprintw(1, 1, "Snake Game");
     refresh();
@@ -502,7 +551,7 @@ int main()
         getchar();
     }
     
-    if(isFinalStage)
+    if(!isFinalStage)
         mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Fail...");
     else
         mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "All Clear!!");
