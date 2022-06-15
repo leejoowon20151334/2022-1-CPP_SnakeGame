@@ -172,6 +172,23 @@ void addStageWall(int stage) {
     }
 }
 
+// 아이템 랜덤 출현
+void locateItem(int x) {
+    int itemY, itemX, poisonY, poisonX;
+    for (int m = 0; m < snakeBoardY; m++) {
+        for (int n = 0; n < snakeBoardX; n++) {
+            if (snakeBoard[m][n] == x)
+                snakeBoard[m][n] = 0;
+        }
+    }
+    do {
+        itemY = getRandomNumber(18);
+        itemX = getRandomNumber(42);
+    } while (snakeBoard[itemY][itemX] != 0);
+    snakeBoard[itemY][itemX] = x;
+}
+
+
 void setGate() {
     //랜덤난수를 이용한 Gate 생성
     int addGate1, addGate2;
@@ -287,10 +304,12 @@ void moveSnake(int key, int status, int enterGate) {
             snake[snakeLength][1] = tempX;
             snake[snakeLength + 1] = NULL;
             snakeLength++;
+            locateItem(3); // 아이템 습득 후 재배치
         }
         else if (status == -1 && snakeLength > 1) { //길이 감소
             snake[snakeLength - 1] = NULL;
             snakeLength--;
+            locateItem(4); // 아이템 습득 후 재배치
         }
     }
 
@@ -399,34 +418,6 @@ bool isConflict(int key) {
 }
 
 //window에 board 출력
-//void printSnakeBoard(WINDOW* win) {
-//    string line;
-//    for (int i = 0; i < snakeBoardY; i++) {
-//        line = "";
-//        for (int j = 0; j < snakeBoardX; j++) {
-//            if (snakeBoard[i][j] == -2 || snakeBoard[i][j] == -1)
-//                line += "-";
-//            else if (snakeBoard[i][j] == 0)
-//                line += " ";
-//            else if (snakeBoard[i][j] == 1)
-//                line += "O";
-//            else if (snakeBoard[i][j] == 2)
-//                line += "H";
-//            else if (snakeBoard[i][j] == 3)
-//                line += "G";
-//            else if (snakeBoard[i][j] == 4)
-//                line += "P";
-//            else if (snakeBoard[i][j] == 5)
-//                line += "@";
-//            else if (snakeBoard[i][j] == 6)
-//                line += "@";
-//        }
-//        mvwprintw(win, i + 1, 2, line.c_str());
-//    }
-//
-//    wrefresh(win);
-//}
-//window에 board 출력
 void printSnakeBoard(WINDOW* win) {
     for (int i = 0; i < snakeBoardY; i++) {
         for (int j = 0; j < snakeBoardX; j++) {
@@ -497,6 +488,7 @@ int main()
     
     bool isFail = false;
     bool isFinalStage = false;
+    int i = 0;
 
     for (int stage = 1; stage < 6; stage++) {
         if (stage == 3) ticUnit = 250;  //3단계부터 속도 2배 증가
@@ -512,13 +504,8 @@ int main()
         setImmuneWall();
         setGate();
         initSnake();
-
-        addItem(4, 10, 1);
-        addItem(5, 10, 1);
-        addItem(7, 10, 1);
-        addItem(7, 13, 1);
-        addItem(7, 15, 1);
-        addItem(11, 10, -1);
+        locateItem(3);
+        locateItem(4);
 
         while (1) {
             Sleep(timeUnit);
@@ -527,6 +514,12 @@ int main()
                 isFail = true;
                 break; //반대방향 입력 or esc 입력시 종료
             }
+
+            // 일정 시간 이후 아이템 재배치
+            if (i % 500 == 499)
+                locateItem(3);
+            if (i % 400 == 399)
+                locateItem(4);
 
             if (tic >= ticUnit) {
                 if (isConflict(key)) {
@@ -537,10 +530,11 @@ int main()
                 printSnakeBoard(snakeWin);
                 tic = 0;
             }
+            i++;
 
             tic += timeUnit;
-            if (snakeLength > 7 && stage<5) break;  //5단계시 실패 전까지 종료되지 않음
-            if (snakeLength < 3) {
+            if (snakeLength > 6 + stage && stage < 5) break; // 미션 수정 (요구점수 5 -> 4 + stage)
+            if (snakeLength < 2) {
                 isFail = true;
                 break;
             }
