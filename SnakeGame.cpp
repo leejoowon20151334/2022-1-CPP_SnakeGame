@@ -506,7 +506,7 @@ int main()
     for (int stage = 1; stage < 6; stage++) {
         if (stage == 3) ticUnit = 250;  //3단계부터 속도 2배 증가
         if (stage == 5) isFinalStage = true;
-        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Press space to start...");
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 4, "Press space to start...");
         wrefresh(snakeWin);
         getchar();
 
@@ -554,15 +554,15 @@ int main()
             }
         }
         if (isFail) break;
-        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Success!!");
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 4, "Success!!");
         wrefresh(snakeWin);
         getchar();
     }
     
     if(!isFinalStage)
-        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "Fail...");
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 4, "Fail...");
     else
-        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 2, "All Clear!!");
+        mvwprintw(snakeWin, snakeBoardY / 2 - 1, 4, "All Clear!!");
     wrefresh(snakeWin);
     getchar();
 
